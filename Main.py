@@ -1,4 +1,5 @@
 from tkinter import *
+from random import choice
 
 
 class Program:
@@ -10,10 +11,10 @@ class Program:
         self.figure = None
 
         self.root_window = root
-        self.root_window.geometry(f'{self.width}x{self.height}')
-        self.root_window.configure(bg='white')
+        self.root_window.geometry(f'{self.width}x{self.height}+500+300')
+        self.root_window.configure(bg='#ACC3A6')
 
-        self.root_canvas = Canvas(self.root_window, width=self.canvas_width, height=self.canvas_height, bg='#f3f3f3')
+        self.root_canvas = Canvas(self.root_window, width=self.canvas_width, height=self.canvas_height, bg='#F5D6BA')
         self.root_canvas.pack(side=BOTTOM)
         self.widgets = []
 
@@ -27,18 +28,18 @@ class Program:
             self.figure.render()
             self.root_canvas.update()
 
-        b_figure = Button(text="Change figure to:")
+        b_figure = Button(text="Change figure to:", bg='#F49D6E')
         b_figure.place(relwidth=0.3, relheight=0.1)
         b_figure['command'] = lambda: self.change_figure_to(figures[list_figures.get(list_figures.curselection()[0])])
         self.widgets.append(b_figure)
 
-        list_figures = Listbox()
+        list_figures = Listbox(bg='#F49D6E')
         for figure in figures.keys():
             list_figures.insert(END, figure)
         list_figures.place(relwidth=0.3, relheight=0.1, relx=0.31)
         self.widgets.append(list_figures)
 
-        list_sections = Listbox()
+        list_sections = Listbox(bg='#F49D6E')
         try:
             for section in self.figure.sections:
                 list_sections.insert(END, section[0])
@@ -47,20 +48,20 @@ class Program:
         list_sections.place(relwidth=0.3, relheight=0.1, relx=0.31, rely=0.12)
         self.widgets.append(list_sections)
 
-        b_dot = Button(text='Add dot to:')
+        b_dot = Button(text='Add dot to:', bg='#F49D6E')
         b_dot.place(relwidth=0.3, relheight=0.1, rely=0.12)
         b_dot['command'] = lambda: self.add_dot(list_sections.get(list_sections.curselection()[0]),
                                                 prop=float(proportion.get()))
         self.widgets.append(b_dot)
 
-        b_clear = Button(text='Clear dots')
+        b_clear = Button(text='Clear dots', bg='#F49D6E')
         b_clear.place(relwidth=0.3, relheight=0.1, relx=0.62)
         b_clear['command'] = lambda: self.clear_dots()
         self.widgets.append(b_clear)
 
-        proportion = Spinbox(values=(0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0))
+        proportion = Spinbox(values=(0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0), bg='#F49D6E')
         proportion.delete(0, "end")
-        proportion.insert(0, '0.5')
+        proportion.insert(0, '0.6')
         proportion.place(rely=0.12, relx=0.62, relwidth=0.3)
         self.widgets.append(proportion)
 
@@ -91,6 +92,7 @@ class Figure:
         self.y_move = y_move
         self.parent = parent
         self.added_dots = []
+        self.planes = []
 
     def add_dot_on_section(self, section, prop):
         d1, d2 = self.get_cords_of_section(section)
@@ -130,7 +132,7 @@ class Figure:
             x, y = self.dots_cords[verge][0] - 14, self.dots_cords[verge][1] - 14
             canvas.create_text(x + self.x_move, y + self.y_move,
                                text=verge,
-                               justify=CENTER, font=("Verdana", 15), fill='blue')
+                               justify=CENTER, font=("Verdana", 15), fill='#A40E4C')
 
 
 class Cube(Figure):
@@ -217,8 +219,8 @@ class Prism(Figure):
         self.sections.append(('af', False))
 
 
-pyr = Pyramid(None, size=200, x_move=40)
-cube = Cube(None, size=200, x_move=40)
+pyr = Pyramid(None, size=200, x_move=40, y_move=30)
+cube = Cube(None, size=200, x_move=40, y_move=30)
 prism = Prism(None, size=200, x_move=70, y_move=30)
 figures = {'Cube': cube, 'Pyramid': pyr, 'Prism': prism}
 
