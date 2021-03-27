@@ -1,5 +1,5 @@
 from tkinter import *
-from random import choice
+from random import choice, randint
 
 
 class Program:
@@ -59,6 +59,11 @@ class Program:
         b_clear['command'] = lambda: self.clear_dots()
         self.widgets.append(b_clear)
 
+        b_points = Button(text='Create 3 points', bg='#F49D6E')
+        b_points.place(relwidth=0.3, relheight=0.1, relx=0.62, rely=0.18)
+        b_points['command'] = lambda: self.figure.create_3_random_dots()
+        self.widgets.append(b_points)
+
         proportion = Spinbox(values=(0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0), bg='#F49D6E')
         proportion.delete(0, "end")
         proportion.insert(0, '0.6')
@@ -111,6 +116,12 @@ class Figure:
         d1[1] += self.y_move
         d2[1] += self.y_move
         return d1, d2
+
+    def create_3_random_dots(self):
+        for i in range(3):
+            section = choice(self.sections)
+            self.add_dot_on_section(section[0], randint(3, 9) * 0.1)
+        self.parent.render_window()
 
     def render(self):
         canvas = self.parent.root_canvas
@@ -219,10 +230,48 @@ class Prism(Figure):
         self.sections.append(('af', False))
 
 
+class Prism_V(Figure):
+    def __init__(self, canvas, size=100, x_move=20, y_move=20):
+        super().__init__(canvas, x_move=x_move, y_move=y_move)
+
+        self.sections.append(('AB', True))
+        self.sections.append(('BC', True))
+        self.sections.append(('CD', True))
+        self.sections.append(('DE', False))
+        self.sections.append(('EF', False))
+        self.sections.append(('FA', False))
+        self.sections.append(('ab', False))
+        self.sections.append(('bc', False))
+        self.sections.append(('cd', False))
+        self.sections.append(('de', False))
+        self.sections.append(('ef', False))
+        self.sections.append(('fa', False))
+        self.sections.append(('aA', False))
+        self.sections.append(('bB', True))
+        self.sections.append(('cC', True))
+        self.sections.append(('dD', False))
+        self.sections.append(('eE', False))
+        self.sections.append(('fF', False))
+
+        self.dots_cords['A'] = (0, int(size * 7 / 8))
+        self.dots_cords['B'] = (int(size * 2 / 8), int(size * 6 / 8))
+        self.dots_cords['C'] = (int(size * 4 / 8), int(size * 6 / 8))
+        self.dots_cords['D'] = (int(size * 6 / 8), int(size * 7 / 8))
+        self.dots_cords['E'] = (int(size * 4 / 8), size)
+        self.dots_cords['F'] = (int(size * 2 / 8), size)
+        self.dots_cords['a'] = (0, int(size * 2 / 8))
+        self.dots_cords['b'] = (int(size * 2 / 8), int(size * 1 / 8))
+        self.dots_cords['c'] = (int(size * 4 / 8), int(size * 1 / 8))
+        self.dots_cords['d'] = (int(size * 6 / 8), int(size * 2 / 8))
+        self.dots_cords['e'] = (int(size * 4 / 8), int(size * 3 / 8))
+        self.dots_cords['f'] = (int(size * 2 / 8), int(size * 3 / 8))
+
+
 pyr = Pyramid(None, size=200, x_move=40, y_move=30)
 cube = Cube(None, size=200, x_move=40, y_move=30)
 prism = Prism(None, size=200, x_move=70, y_move=30)
-figures = {'Cube': cube, 'Pyramid': pyr, 'Prism': prism}
+prism_ugly = Prism_V(None, size=300, x_move=80, y_move=-10)
+figures = {'Cube': cube, 'Pyramid': pyr, 'Prism': prism, 'Prism_v': prism_ugly}
 
 
 def main():
