@@ -112,6 +112,13 @@ class Figure:
 
     def render(self):
         canvas = self.parent.root_canvas
+
+        size = 6
+        for dot in self.added_dots:
+            x1, y1 = map(int, [(dot[0] - size), (dot[1] - size)])
+            x2, y2 = map(int, [(dot[0] + size), (dot[1] + size)])
+            canvas.create_oval(x1, y1, x2, y2, fill='green')
+
         for line in self.sections:
             d1, d2 = self.get_cords_of_section(line[0])
             coordinates = (d1[0], d1[1], d2[0], d2[1])
@@ -119,12 +126,6 @@ class Figure:
                 canvas.create_line(coordinates, width=5)
             else:
                 canvas.create_line(coordinates, dash=(5, 5), width=5)
-
-        size = 6
-        for dot in self.added_dots:
-            x1, y1 = map(int, [(dot[0] - size), (dot[1] - size)])
-            x2, y2 = map(int, [(dot[0] + size), (dot[1] + size)])
-            canvas.create_oval(x1, y1, x2, y2, fill='green')
 
         for verge in self.dots_cords.keys():
             x, y = self.dots_cords[verge][0] - 14, self.dots_cords[verge][1] - 14
