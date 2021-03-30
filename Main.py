@@ -1,4 +1,5 @@
 from tkinter import *
+from math import cos, sin, radians
 
 
 class Program:
@@ -119,6 +120,12 @@ class Figure:
             x2, y2 = map(int, [(dot[0] + size), (dot[1] + size)])
             canvas.create_oval(x1, y1, x2, y2, fill='green')
 
+        for verge in self.dots_cords.keys():
+            x, y = self.dots_cords[verge][0] - 14, self.dots_cords[verge][1] - 14
+            canvas.create_text(x + self.x_move, y + self.y_move,
+                               text=verge,
+                               justify=CENTER, font=("Verdana", 15), fill='blue')
+
         for line in self.sections:
             d1, d2 = self.get_cords_of_section(line[0])
             coordinates = (d1[0], d1[1], d2[0], d2[1])
@@ -126,12 +133,6 @@ class Figure:
                 canvas.create_line(coordinates, width=5)
             else:
                 canvas.create_line(coordinates, dash=(5, 5), width=5)
-
-        for verge in self.dots_cords.keys():
-            x, y = self.dots_cords[verge][0] - 14, self.dots_cords[verge][1] - 14
-            canvas.create_text(x + self.x_move, y + self.y_move,
-                               text=verge,
-                               justify=CENTER, font=("Verdana", 15), fill='blue')
 
 
 class Cube(Figure):
@@ -218,10 +219,76 @@ class Prism(Figure):
         self.sections.append(('af', False))
 
 
+class ExperimentTetrahedron(Figure):
+    def __init__(self, canvas, size=100, x_move=20, y_move=20):
+        super().__init__(canvas, x_move=x_move, y_move=y_move)
+        # 'ABCDabcd'
+        self.sections.append(('AB', True))
+        self.sections.append(('BC', False))
+        self.sections.append(('CA', False))
+        self.sections.append(('AS', False))
+        self.sections.append(('BS', False))
+        self.sections.append(('CS', False))
+
+        self.dots_cords['A'] = (0, 0, 0)
+        self.dots_cords['B'] = (0, size, 0)
+        self.dots_cords['C'] = (size * 0.86, size * 0.86, 0)
+        self.dots_cords['S'] = (size * 0.43, size * 0.43, size * 0.86)
+
+        self.projecting_angle = radians(30)
+
+    def get_point_cords(self, point):
+        d1 = list(self.dots_cords[point])
+
+        return [d1[1] + 0.5 * d1[0] * cos(self.projecting_angle), -1 * d1[2] + 0.5 * d1[0] * sin(self.projecting_angle)]
+
+    def get_cords_of_section(self, string):
+
+        """self.vPoint.X = (self.vPoint.X * cos(radians(self.ang))
+                         - self.vPoint.Y * sin(radians(self.ang)))
+        self.vPoint.Y = (self.vPoint.X * sin(radians(self.ang))
+                         + self.vPoint.Y * cos(radians(self.ang)))"""
+
+        string = sorted(list(string))
+        d1 = self.get_point_cords(string[0])
+        d2 = self.get_point_cords(string[1])
+
+        d1[0] += self.x_move
+        d2[0] += self.x_move
+        d1[1] += self.y_move
+        d2[1] += self.y_move
+        return d1, d2
+
+    def render(self):
+        canvas = self.parent.root_canvas
+
+        size = 6
+        for dot in self.added_dots:
+            x1, y1 = map(int, [(dot[0] - size), (dot[1] - size)])
+            x2, y2 = map(int, [(dot[0] + size), (dot[1] + size)])
+            canvas.create_oval(x1, y1, x2, y2, fill='green')
+
+        for verge in self.dots_cords.keys():
+            x, y = self.get_point_cords(verge)[0] - 14, self.get_point_cords(verge)[1] - 14
+            canvas.create_text(x + self.x_move, y + self.y_move,
+                               text=verge,
+                               justify=CENTER, font=("Verdana", 15), fill='blue')
+
+        for line in self.sections:
+            d1, d2 = self.get_cords_of_section(line[0])
+            coordinates = (d1[0], d1[1], d2[0], d2[1])
+            if not line[1]:
+                canvas.create_line(coordinates, width=5)
+            else:
+                canvas.create_line(coordinates, dash=(5, 5), width=5)
+
+
 pyr = Pyramid(None, size=200, x_move=40)
 cube = Cube(None, size=200, x_move=40)
 prism = Prism(None, size=200, x_move=70, y_move=30)
-figures = {'Cube': cube, 'Pyramid': pyr, 'Prism': prism}
+teth = ExperimentTetrahedron(None, size=200, x_move=70, y_move=210)
+
+figures = {'Cube': cube, 'Pyramid': pyr, 'Prism': prism, 'Exr_tetrahedron': teth}
 
 
 def main():
