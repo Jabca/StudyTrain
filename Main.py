@@ -1,6 +1,7 @@
 from tkinter import *
 from math import cos, sin, radians
 
+greek_letters = ['α', 'β', 'γ', 'δ', 'ε', 'θ']
 
 class Program:
     def __init__(self, root, window_width=400, window_height=500, canvas_width=400, canvas_height=350):
@@ -85,169 +86,28 @@ class Program:
 
 
 class Figure:
-    def __init__(self, parent, x_move, y_move):
+    def __init__(self, parent, x_move, y_move, angle, size):
         self.sections = []
         self.dots_cords = {}
         self.x_move = x_move
         self.y_move = y_move
         self.parent = parent
-        self.added_dots = []
+        self.added_dots = {}
+        self.projecting_angle = radians(angle)
+        self.size = size
 
     def add_dot_on_section(self, section, prop):
-        d1, d2 = self.get_cords_of_section(section)
+        d1, d2 = self.dots_cords[section[0]], self.dots_cords[section[1]]
         delta_x = d2[0] - d1[0]
         delta_y = d2[1] - d1[1]
+        delta_z = d2[2] - d1[0]
         x = d1[0] + delta_x * prop
         y = d1[1] + delta_y * prop
-        self.added_dots.append((x, y))
+        z = d1[2] + delta_z * prop
+        self.added_dots[greek_letters[len(list(self.added_dots.keys()))]] = (x, y, z)
+        print(self.added_dots)
 
     def get_cords_of_section(self, string):
-        string = sorted(list(string))
-        d1 = list(self.dots_cords[string[0]])
-        d2 = list(self.dots_cords[string[1]])
-        d1[0] += self.x_move
-        d2[0] += self.x_move
-        d1[1] += self.y_move
-        d2[1] += self.y_move
-        return d1, d2
-
-    def render(self):
-        canvas = self.parent.root_canvas
-
-        size = 6
-        for dot in self.added_dots:
-            x1, y1 = map(int, [(dot[0] - size), (dot[1] - size)])
-            x2, y2 = map(int, [(dot[0] + size), (dot[1] + size)])
-            canvas.create_oval(x1, y1, x2, y2, fill='green')
-
-        for verge in self.dots_cords.keys():
-            x, y = self.dots_cords[verge][0] - 14, self.dots_cords[verge][1] - 14
-            canvas.create_text(x + self.x_move, y + self.y_move,
-                               text=verge,
-                               justify=CENTER, font=("Verdana", 15), fill='blue')
-
-        for line in self.sections:
-            d1, d2 = self.get_cords_of_section(line[0])
-            coordinates = (d1[0], d1[1], d2[0], d2[1])
-            if not line[1]:
-                canvas.create_line(coordinates, width=5)
-            else:
-                canvas.create_line(coordinates, dash=(5, 5), width=5)
-
-
-class Cube(Figure):
-    def __init__(self, canvas, size=100, x_move=20, y_move=20):
-        super().__init__(canvas, x_move=x_move, y_move=y_move)
-        # 'ABCDabcd'
-        self.sections.append(('Aa', False))
-        self.sections.append(('AB', True))
-        self.sections.append(('AD', False))
-        self.sections.append(('BC', True))
-        self.sections.append(('Bb', True))
-        self.sections.append(('CD', False))
-        self.sections.append(('Cc', False))
-        self.sections.append(('Dd', False))
-        self.sections.append(('ab', False))
-        self.sections.append(('ad', False))
-        self.sections.append(('bc', False))
-        self.sections.append(('cd', False))
-
-        self.dots_cords['A'] = (0, int(1.5 * size))
-        self.dots_cords['B'] = (int(0.5 * size), size)
-        self.dots_cords['C'] = (int(1.5 * size), size)
-        self.dots_cords['D'] = (size, int(1.5 * size))
-        self.dots_cords['a'] = (0, int(0.5 * size))
-        self.dots_cords['b'] = (int(0.5 * size), 0)
-        self.dots_cords['c'] = (int(1.5 * size), 0)
-        self.dots_cords['d'] = (size, int(0.5 * size))
-
-
-class Pyramid(Figure):
-    def __init__(self, canvas, size=100, x_move=20, y_move=20):
-        super().__init__(canvas, x_move=x_move, y_move=y_move)
-
-        self.sections.append(('AB', True))
-        self.sections.append(('AD', False))
-        self.sections.append(('AS', False))
-        self.sections.append(('BC', True))
-        self.sections.append(('BS', True))
-        self.sections.append(('CD', False))
-        self.sections.append(('CS', False))
-        self.sections.append(('DS', False))
-
-        self.dots_cords['S'] = (int(size * 2 / 3), 0)
-        self.dots_cords['A'] = (0, int(size * 7 / 6))
-        self.dots_cords['D'] = (size, int(size * 7 / 6))
-        self.dots_cords['B'] = (int(size / 2), int(size * 5 / 6))
-        self.dots_cords['C'] = (int(1.5 * size), int(size * 5 / 6))
-
-
-class Prism(Figure):
-    def __init__(self, canvas, size=100, x_move=20, y_move=20):
-        super().__init__(canvas, x_move=x_move, y_move=y_move)
-
-        self.dots_cords['A'] = (int(size * 1 / 5), int(size * 7 / 5))
-        self.dots_cords['B'] = (int(size * 4 / 5), int(size * 7 / 5))
-        self.dots_cords['C'] = (int(size * 6 / 5), int(size * 6 / 5))
-        self.dots_cords['D'] = (size, size)
-        self.dots_cords['E'] = (int(2 / 5 * size), size)
-        self.dots_cords['a'] = (int(1 / 5 * size), int(size * 2 / 5))
-        self.dots_cords['b'] = (int(4 / 5 * size), int(size * 2 / 5))
-        self.dots_cords['c'] = (int(6 / 5 * size), int(size * 1 / 5))
-        self.dots_cords['d'] = (size, 0)
-        self.dots_cords['e'] = (int(2 / 5 * size), 0)
-        self.dots_cords['f'] = (0, int(size * 1 / 5))
-        self.dots_cords['F'] = (0, int(6 / 5 * size))
-
-        self.sections.append(('AB', False))
-        self.sections.append(('Aa', False))
-        self.sections.append(('AF', False))
-        self.sections.append(('Bb', False))
-        self.sections.append(('BC', False))
-        self.sections.append(('Cc', False))
-        self.sections.append(('CD', True))
-        self.sections.append(('Dd', True))
-        self.sections.append(('DE', True))
-        self.sections.append(('Ee', True))
-        self.sections.append(('EF', True))
-        self.sections.append(('Ff', False))
-        self.sections.append(('ab', False))
-        self.sections.append(('bc', False))
-        self.sections.append(('cd', False))
-        self.sections.append(('de', False))
-        self.sections.append(('ef', False))
-        self.sections.append(('af', False))
-
-
-class ExperimentTetrahedron(Figure):
-    def __init__(self, canvas, size=100, x_move=20, y_move=20):
-        super().__init__(canvas, x_move=x_move, y_move=y_move)
-        # 'ABCDabcd'
-        self.sections.append(('AB', True))
-        self.sections.append(('BC', False))
-        self.sections.append(('CA', False))
-        self.sections.append(('AS', False))
-        self.sections.append(('BS', False))
-        self.sections.append(('CS', False))
-
-        self.dots_cords['A'] = (0, 0, 0)
-        self.dots_cords['B'] = (0, size, 0)
-        self.dots_cords['C'] = (size * 0.86, size * 0.86, 0)
-        self.dots_cords['S'] = (size * 0.43, size * 0.43, size * 0.86)
-
-        self.projecting_angle = radians(30)
-
-    def get_point_cords(self, point):
-        d1 = list(self.dots_cords[point])
-
-        return [d1[1] + 0.5 * d1[0] * cos(self.projecting_angle), -1 * d1[2] + 0.5 * d1[0] * sin(self.projecting_angle)]
-
-    def get_cords_of_section(self, string):
-
-        """self.vPoint.X = (self.vPoint.X * cos(radians(self.ang))
-                         - self.vPoint.Y * sin(radians(self.ang)))
-        self.vPoint.Y = (self.vPoint.X * sin(radians(self.ang))
-                         + self.vPoint.Y * cos(radians(self.ang)))"""
 
         string = sorted(list(string))
         d1 = self.get_point_cords(string[0])
@@ -262,18 +122,6 @@ class ExperimentTetrahedron(Figure):
     def render(self):
         canvas = self.parent.root_canvas
 
-        size = 6
-        for dot in self.added_dots:
-            x1, y1 = map(int, [(dot[0] - size), (dot[1] - size)])
-            x2, y2 = map(int, [(dot[0] + size), (dot[1] + size)])
-            canvas.create_oval(x1, y1, x2, y2, fill='green')
-
-        for verge in self.dots_cords.keys():
-            x, y = self.get_point_cords(verge)[0] - 14, self.get_point_cords(verge)[1] - 14
-            canvas.create_text(x + self.x_move, y + self.y_move,
-                               text=verge,
-                               justify=CENTER, font=("Verdana", 15), fill='blue')
-
         for line in self.sections:
             d1, d2 = self.get_cords_of_section(line[0])
             coordinates = (d1[0], d1[1], d2[0], d2[1])
@@ -282,13 +130,148 @@ class ExperimentTetrahedron(Figure):
             else:
                 canvas.create_line(coordinates, dash=(5, 5), width=5)
 
+        size = 6
+        for dot in self.added_dots:
+            cord = self.get_point_cords(dot)
+            cord = (cord[0] + self.x_move, cord[1] + self.y_move)
+            x1, y1 = map(int, [(cord[0] - size), (cord[1] - size)])
+            x2, y2 = map(int, [(cord[0] + size), (cord[1] + size)])
+            canvas.create_oval(x1, y1, x2, y2, fill='green')
 
-pyr = Pyramid(None, size=200, x_move=40)
-cube = Cube(None, size=200, x_move=40)
-prism = Prism(None, size=200, x_move=70, y_move=30)
-teth = ExperimentTetrahedron(None, size=200, x_move=70, y_move=210)
+        for verge in self.dots_cords.keys():
+            x, y = self.get_point_cords(verge)[0] - 14, self.get_point_cords(verge)[1] - 14
+            canvas.create_text(x + self.x_move, y + self.y_move,
+                               text=verge,
+                               justify=CENTER, font=("Verdana", 15), fill='blue')
 
-figures = {'Cube': cube, 'Pyramid': pyr, 'Prism': prism, 'Exr_tetrahedron': teth}
+    def get_point_cords(self, point):
+        if point in greek_letters:
+            d1 = list(self.added_dots[point])
+        else:
+            d1 = list(self.dots_cords[point])
+
+        return [d1[0] + 0.5 * d1[1] * cos(self.projecting_angle), -1 * d1[2] + 0.5 * d1[1] * sin(self.projecting_angle)]
+
+    def reformat_cords(self):
+        for key in self.dots_cords:
+            cords = self.dots_cords[key]
+            self.dots_cords[key] = (cords[0] * self.size, cords[1] * self.size, cords[2] * self.size)
+
+
+class Cube(Figure):
+    def __init__(self, canvas, size=100, x_move=20, y_move=200, angle=45):
+        super().__init__(canvas, x_move=x_move, y_move=y_move, angle=angle, size=size)
+        # 'ABCDabcd'
+        self.sections.append(('Aa', False))
+        self.sections.append(('AB', True))
+        self.sections.append(('AD', False))
+        self.sections.append(('BC', True))
+        self.sections.append(('Bb', True))
+        self.sections.append(('CD', False))
+        self.sections.append(('Cc', False))
+        self.sections.append(('Dd', False))
+        self.sections.append(('ab', False))
+        self.sections.append(('ad', False))
+        self.sections.append(('bc', False))
+        self.sections.append(('cd', False))
+
+        self.dots_cords['A'] = (0, 0, 0)
+        self.dots_cords['B'] = (1, 0, 0)
+        self.dots_cords['C'] = (1, 1, 0)
+        self.dots_cords['D'] = (0, 1, 0)
+        self.dots_cords['a'] = (0, 0, 1)
+        self.dots_cords['b'] = (1, 0, 1)
+        self.dots_cords['c'] = (1, 1, 1)
+        self.dots_cords['d'] = (0, 1, 1)
+
+        self.reformat_cords()
+
+
+class Pyramid(Figure):
+    def __init__(self, canvas, size=100, x_move=20, y_move=200, angle=45):
+        super().__init__(canvas, x_move=x_move, y_move=y_move, angle=angle, size=size)
+
+        self.sections.append(('AB', True))
+        self.sections.append(('AD', False))
+        self.sections.append(('AS', False))
+        self.sections.append(('BC', True))
+        self.sections.append(('BS', True))
+        self.sections.append(('CD', False))
+        self.sections.append(('CS', False))
+        self.sections.append(('DS', False))
+
+        self.dots_cords['S'] = (0.5, 0.5, 1)
+        self.dots_cords['A'] = (0, 0, 0)
+        self.dots_cords['B'] = (1, 0, 0)
+        self.dots_cords['C'] = (1, 1, 0)
+        self.dots_cords['D'] = (0, 1, 0)
+
+        self.reformat_cords()
+
+
+class Prism(Figure):
+    def __init__(self, canvas, size=100, x_move=20, y_move=200, angle=45):
+        super().__init__(canvas, x_move=x_move, y_move=y_move, angle=angle, size=size)
+
+        self.dots_cords['A'] = (0.5, 0, 0)
+        self.dots_cords['B'] = (1.5, 0, 0)
+        self.dots_cords['C'] = (2, 0.87, 0)
+        self.dots_cords['D'] = (1.5, 1.74, 0)
+        self.dots_cords['E'] = (0.5, 1.74, 0)
+        self.dots_cords['F'] = (0, 0.87, 0)
+        self.dots_cords['a'] = (0.5, 0, 1)
+        self.dots_cords['b'] = (1.5, 0, 1)
+        self.dots_cords['c'] = (2, 0.87, 1)
+        self.dots_cords['d'] = (1.5, 1.74, 1)
+        self.dots_cords['e'] = (0.5, 1.74, 1)
+        self.dots_cords['f'] = (0, 0.87, 1)
+
+        self.sections.append(('AB', True))
+        self.sections.append(('Aa', True))
+        self.sections.append(('AF', True))
+        self.sections.append(('Bb', True))
+        self.sections.append(('BC', True))
+        self.sections.append(('Cc', False))
+        self.sections.append(('CD', False))
+        self.sections.append(('Dd', False))
+        self.sections.append(('DE', False))
+        self.sections.append(('Ee', False))
+        self.sections.append(('EF', False))
+        self.sections.append(('Ff', False))
+        self.sections.append(('ab', False))
+        self.sections.append(('bc', False))
+        self.sections.append(('cd', False))
+        self.sections.append(('de', False))
+        self.sections.append(('ef', False))
+        self.sections.append(('af', False))
+
+        self.reformat_cords()
+
+
+class Tetrahedron(Figure):
+    def __init__(self, canvas, size=100, x_move=20, y_move=200, angle=45):
+        super().__init__(canvas, x_move=x_move, y_move=y_move, angle=angle, size=size)
+        self.sections.append(('AB', False))
+        self.sections.append(('BC', False))
+        self.sections.append(('CA', True))
+        self.sections.append(('AS', False))
+        self.sections.append(('BS', False))
+        self.sections.append(('CS', False))
+
+        self.dots_cords['A'] = (0, 0, 0)
+        self.dots_cords['B'] = (0, 1, 0)
+        self.dots_cords['C'] = (0.86, 0.86, 0)
+        self.dots_cords['S'] = (0.43, 0.43, 0.86)
+
+        self.reformat_cords()
+
+
+pyramid = Pyramid(None, size=200, x_move=40)
+cube = Cube(None, size=200, x_move=40, y_move=240)
+prism = Prism(None, size=140, x_move=0, y_move=180)
+tetrahedron = Tetrahedron(None, size=200, x_move=70, y_move=210)
+
+figures = {'Cube': cube, 'Pyramid': pyramid, 'Prism': prism, 'Tetrahedron': tetrahedron}
 
 
 def main():
