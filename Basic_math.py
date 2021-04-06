@@ -22,5 +22,8 @@ class Straight:
 
     def plain_straight_crossing(self, plain):
         a, b, c, d = plain.coeffs
-        t0 = -1 * (a * self.m0[0] + b * self.m0[1] + c * self.m0[2] + d) / (a * self.m + b * self.n + c * self.p)
-        return self.x(t0), self.y(t0), self.z(t0)
+        try:
+            t0 = -1 * (a * self.m0[0] + b * self.m0[1] + c * self.m0[2] + d) / (a * self.m + b * self.n + c * self.p)
+            return self.x(t0), self.y(t0), self.z(t0)
+        except ZeroDivisionError:
+            return  None
