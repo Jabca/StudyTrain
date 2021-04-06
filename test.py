@@ -1,5 +1,5 @@
 from Basic_math import Plain, Straight
 
-plain1 = Plain((0, 0, 0), (0, 0, 0), (0, 0, 0))
-str1 = Straight((1, 0, 1), (2, 0, 1))
-print(str1.plain_straight_crossing(plain1))
+
+str1 = Straight((0, 0, 3), (3.25, 3.62, 0))
+print(str1.whether_dot_on_section((-3.24, -3.61, 5.99)))

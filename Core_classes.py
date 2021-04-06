@@ -19,9 +19,10 @@ class Figure:
 
     def add_dot_on_section(self, section, prop):
         d1, d2 = self.dots_cords[section[0]], self.dots_cords[section[1]]
+        print(d1, d2)
         delta_x = d2[0] - d1[0]
         delta_y = d2[1] - d1[1]
-        delta_z = d2[2] - d1[0]
+        delta_z = d2[2] - d1[2]
         x = d1[0] + delta_x * prop
         y = d1[1] + delta_y * prop
         z = d1[2] + delta_z * prop

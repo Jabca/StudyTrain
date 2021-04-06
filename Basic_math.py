@@ -13,6 +13,7 @@ class Plain:
 class Straight:
     def __init__(self, m0, m1):
         self.m0 = m0
+        self.m1 = m1
         self.m = m1[0] - m0[0]
         self.n = m1[1] - m0[1]
         self.p = m1[2] - m0[2]
@@ -26,4 +27,28 @@ class Straight:
             t0 = -1 * (a * self.m0[0] + b * self.m0[1] + c * self.m0[2] + d) / (a * self.m + b * self.n + c * self.p)
             return self.x(t0), self.y(t0), self.z(t0)
         except ZeroDivisionError:
-            return  None
+            return None
+
+    def whether_dot_on_section(self, dot):
+        dx = self.m1[0] - self.m0[0]
+        dy = self.m1[1] - self.m0[1]
+        dz = self.m1[2] - self.m0[2]
+
+        m = dot[0] - self.m0[0]
+        n = dot[1] - self.m0[1]
+        p = dot[2] - self.m0[2]
+
+        if round(self.m / m, 1) == round(self.n / n, 1) == round(self.p / p, 1):
+            max_delta = max([abs(dx), abs(dy), abs(dz)])
+            if max_delta == abs(dx):
+                xs = sorted([self.m0[0], self.m1[0]])
+                return xs[0] <= dot[0] <= xs[1]
+            elif max_delta == abs(dy):
+                ys = sorted([self.m0[1], self.m1[1]])
+                return ys[0] <= dot[1] <= ys[1]
+            else:
+                zs = sorted([self.m0[2], self.m1[2]])
+                return zs[0] <= dot[2] <= zs[1]
+
+        else:
+            print('<Error> dot not on straight')
