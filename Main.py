@@ -1,5 +1,4 @@
 from tkinter import *
-from Basic_math import Plain, Straight
 from Figures import Cube, Prism, Pyramid, Tetrahedron
 
 
@@ -111,7 +110,6 @@ class Program:
             print('<Error> figure is not defined')
             return None
         self.figure.cross_figure_with_plain()
-        print(self.figure.plain_crossing_points)
         self.render_window()
 
 

@@ -57,7 +57,7 @@ class Figure:
         if self.secant_plain is not None:
             points_2d = [self.get_point_cords(point) for point in self.added_dots]
             points_2d = rearrange_dots(points_2d)
-            canvas.create_polygon(*points_2d, fill='orange')
+            canvas.create_polygon(*points_2d, fill='orange', outline='black')
 
         for line in self.sections:
             d1, d2 = self.get_cords_of_section(line[0])
