@@ -4,7 +4,7 @@ from Figures import Cube, Prism, Pyramid, Tetrahedron
 
 
 class Program:
-    def __init__(self, root, window_width=400, window_height=500, canvas_width=400, canvas_height=350):
+    def __init__(self, root, window_width=400, window_height=540, canvas_width=400, canvas_height=350):
         self.width = window_width
         self.height = window_height
         self.canvas_width = canvas_width
@@ -72,6 +72,20 @@ class Program:
         scrollbar.config(command=list_sections.yview)
         self.widgets.append(scrollbar)
 
+        b_cross = Button(text='Cross')
+        b_cross.place(relwidth=0.3, relheight=0.1, relx=0.62, rely=0.17)
+        b_cross['command'] = lambda: self.cross_with_plain()
+        self.widgets.append(b_cross)
+
+        w2 = Scale(from_=0, to=90, tickinterval=30, orient=HORIZONTAL)
+        try:
+            w2.set(self.figure.projecting_angle)
+        except AttributeError:
+            w2.set(45)
+        w2.place(relwidth=0.6, relheight=0.12, rely=0.22, relx=0.01)
+        w2.bind("<ButtonRelease>", lambda x: self.figure.set_angle(w2.get()))
+        self.widgets.append(w2)
+
     def change_figure_to(self, fig):
         if self.figure is not None:
             self.figure.parent = None
@@ -88,6 +102,16 @@ class Program:
 
     def clear_dots(self):
         self.figure.added_dots.clear()
+        self.figure.secant_plain = None
+        self.figure.plain_crossing_points.clear()
+        self.render_window()
+
+    def cross_with_plain(self):
+        if self.figure is None:
+            print('<Error> figure is not defined')
+            return None
+        self.figure.cross_figure_with_plain()
+        print(self.figure.plain_crossing_points)
         self.render_window()
 
 
@@ -95,6 +119,8 @@ pyramid = Pyramid(None, size=200, x_move=40)
 cube = Cube(None, size=200, x_move=40, y_move=240)
 prism = Prism(None, size=140, x_move=0, y_move=180)
 tetrahedron = Tetrahedron(None, size=200, x_move=70, y_move=210)
+
+cube.added_dots = {'α': (100.0, 200.0, 200.0), 'β': (0.0, 100.0, 200.0), 'γ': (0.0, 200.0, 100.0)}
 
 figures = {'Cube': cube, 'Pyramid': pyramid, 'Prism': prism, 'Tetrahedron': tetrahedron}
 

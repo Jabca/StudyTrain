@@ -1,3 +1,5 @@
+from math import atan2, degrees
+
 class Plain:
     def __init__(self, m0, m1, m2):
         a = [[m1[0] - m0[0], m2[0] - m0[0]], [m1[1] - m0[1], m2[1] - m0[1]], [m1[2] - m0[2], m2[2] - m0[2]]]
@@ -38,7 +40,30 @@ class Straight:
         n = dot[1] - self.m0[1]
         p = dot[2] - self.m0[2]
 
-        if round(self.m / m, 1) == round(self.n / n, 1) == round(self.p / p, 1):
+        try:
+            m_bool = self.m / m
+        except ZeroDivisionError:
+            m_bool = self.m == m
+
+        try:
+            n_bool = self.n / n
+        except ZeroDivisionError:
+            n_bool = self.n == n
+
+        try:
+            p_bool = self.p / p
+        except ZeroDivisionError:
+            p_bool = self.p == p
+
+        # print(self.m, self.n, self.p)
+        # print(m, n, p, 'coeffs')
+
+        if not all(filter(lambda x: type(x) is bool, [m_bool, n_bool, p_bool])):
+            return False
+
+        ints_coeffs = list(filter(lambda x: type(x) is not bool, [m_bool, n_bool, p_bool]))
+
+        if all([ints_coeffs[0] == el for el in ints_coeffs]):
             max_delta = max([abs(dx), abs(dy), abs(dz)])
             if max_delta == abs(dx):
                 xs = sorted([self.m0[0], self.m1[0]])
@@ -51,4 +76,12 @@ class Straight:
                 return zs[0] <= dot[2] <= zs[1]
 
         else:
-            print('<Error> dot not on straight')
+            return False
+
+
+def rearrange_dots(dots):
+    center = [sum([el[0] for el in dots]), sum([el[1] for el in dots])]
+    center[0] = center[0] / len(dots)
+    center[1] = center[1] / len(dots)
+    ans = sorted(dots, key=lambda  x: atan2(x[0] - center[0], x[1] - center[1]))
+    return ans

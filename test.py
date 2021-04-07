@@ -1,5 +1,5 @@
 from Basic_math import Plain, Straight
 
-
-str1 = Straight((0, 0, 3), (3.25, 3.62, 0))
-print(str1.whether_dot_on_section((-3.24, -3.61, 5.99)))
+plain = Plain((0, 0, 10), (1, 1, 10), (0, 1, 10))
+str1 = Straight((0, 2, 0), (0, 2, 2))
+print(str1.whether_dot_on_section((0, 2, 1)))
