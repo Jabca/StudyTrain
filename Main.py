@@ -1,5 +1,7 @@
 from tkinter import *
 from Figures import Cube, Prism, Pyramid, Tetrahedron
+from PIL import ImageGrab
+
 
 
 class Program:
@@ -85,6 +87,11 @@ class Program:
         w2.bind("<ButtonRelease>", lambda x: self.figure.set_angle(w2.get()))
         self.widgets.append(w2)
 
+        save_b = Button(text='↓')
+        save_b.place(relx=0.75, rely=0.28, relwidth=0.05, relheight=0.05)
+        save_b['command'] = lambda: self.getter()
+        self.widgets.append(save_b)
+
     def change_figure_to(self, fig):
         if self.figure is not None:
             self.figure.parent = None
@@ -99,10 +106,18 @@ class Program:
         else:
             print('<Error> figure is not declared')
 
+    def getter(self):
+        x = self.root_window.winfo_rootx() + self.root_canvas.winfo_x()
+        y = self.root_window.winfo_rooty() + self.root_canvas.winfo_y()
+        x1 = x + self.root_canvas.winfo_width()
+        y1 = y + self.root_canvas.winfo_height()
+        ImageGrab.grab().crop((x, y, x1, y1)).save("images/save.jpg")
+
     def clear_dots(self):
         self.figure.added_dots.clear()
         self.figure.secant_plain = None
         self.figure.plain_crossing_points.clear()
+        self.figure.additional_dots.clear()
         self.render_window()
 
     def cross_with_plain(self):
