@@ -2,7 +2,7 @@ from math import cos, sin, radians
 from Basic_math import Plain, Straight, rearrange_dots
 from tkinter import *
 
-greek_letters = ['α', 'β', 'γ', 'δ', 'ε', 'θ']
+greek_letters = ['α', 'β', 'γ', 'δ', 'ε', 'θ', 'π',  'ψ', 'ω', 'Π', 'Σ', 'Ψ', 'Δ']
 
 
 class Figure:

@@ -1,7 +1,9 @@
 from tkinter import *
 from Figures import Cube, Prism, Pyramid, Tetrahedron
 from PIL import ImageGrab
+import datetime
 
+images_amount = 0
 
 
 class Program:
@@ -107,11 +109,15 @@ class Program:
             print('<Error> figure is not declared')
 
     def getter(self):
+        global images_amount
         x = self.root_window.winfo_rootx() + self.root_canvas.winfo_x()
         y = self.root_window.winfo_rooty() + self.root_canvas.winfo_y()
         x1 = x + self.root_canvas.winfo_width()
         y1 = y + self.root_canvas.winfo_height()
-        ImageGrab.grab().crop((x, y, x1, y1)).save("images/save.jpg")
+        today = datetime.datetime.today()
+        ImageGrab.grab().crop((x, y, x1, y1)).save(f"downloaded_images/{images_amount}-({today.day}-{today.month}).jpg")
+        print(f"successfully loaded '{images_amount}-({today.day}-{today.month}).jpg'")
+        images_amount += 1
 
     def clear_dots(self):
         self.figure.added_dots.clear()
@@ -128,10 +134,10 @@ class Program:
         self.render_window()
 
 
-pyramid = Pyramid(None, size=200, x_move=40)
-cube = Cube(None, size=200, x_move=40, y_move=240)
-prism = Prism(None, size=140, x_move=0, y_move=180)
-tetrahedron = Tetrahedron(None, size=200, x_move=70, y_move=210)
+pyramid = Pyramid(None, size=220, x_move=65, y_move=240)
+cube = Cube(None, size=200, x_move=65, y_move=260)
+prism = Prism(None, size=140, x_move=20, y_move=200)
+tetrahedron = Tetrahedron(None, size=240, x_move=70, y_move=210)
 
 cube.added_dots = {'α': (100.0, 200.0, 200.0), 'β': (0.0, 100.0, 200.0), 'γ': (0.0, 200.0, 100.0)}
 
