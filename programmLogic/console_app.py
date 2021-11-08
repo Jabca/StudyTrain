@@ -360,12 +360,12 @@ parser.add_argument('--figure', choices=['Cube', 'Pyramid', 'Prism', 'Tetrahedro
                     help='Which figure to choose', default='random')
 args = parser.parse_args()
 
-if 'sections_res' in os.listdir('.'):
-    shutil.rmtree('sections_res')
+if 'sections_res' in os.listdir('..'):
+    shutil.rmtree('../sections_res')
 
-os.mkdir('sections_res')
-os.mkdir('sections_res/teacher')
-os.mkdir('sections_res/students')
+os.mkdir('../sections_res')
+os.mkdir('../sections_res/teacher')
+os.mkdir('../sections_res/students')
 
 
 for i in range(args.images_amount):
