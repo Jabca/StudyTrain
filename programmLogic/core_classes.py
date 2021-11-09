@@ -16,7 +16,7 @@ class Figure:
         self.secant_plain = None
         self.plain_crossing_points = []
         self.additional_dots = []
-`
+
     def add_dot_on_section(self, section: str, prop: float) -> None:
         d1, d2 = self.dots_cords[section[0]], self.dots_cords[section[1]]
         delta_x = d2[0] - d1[0]
@@ -41,7 +41,7 @@ class Figure:
     def cross_figure_with_plain(self) -> None:
         if self.get_secant_plain() is None:
             return None
-        
+
         for section in self.sections:
             d1, d2 = self.dots_cords[section[0][0]], self.dots_cords[section[0][1]]
             str1 = Straight(d1, d2)
@@ -113,4 +113,4 @@ class Figure:
 
     def set_angle(self, angle: int) -> None:
         self.projecting_angle = angle
-        self.parent.render_window()
+        

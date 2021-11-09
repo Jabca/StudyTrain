@@ -34,7 +34,6 @@ class Program:
                 self.scale.set(45)
         
 
-
     def update_canvas(self):
         self.root_canvas.delete("all")
         if(self.figure is not None):
@@ -79,7 +78,7 @@ class Program:
 
         w2 = Scale(from_=0, to=90, tickinterval=30, orient=HORIZONTAL)
         w2.place(relwidth=0.6, relheight=0.12, rely=0.22, relx=0.01)
-        w2.bind("<ButtonRelease>", lambda x: self.figure.set_angle(w2.get()))
+        w2.bind("<Motion>", lambda x: self.change_angle(w2.get()))
 
         save_b = Button(text='↓')
         save_b.place(relx=0.75, rely=0.28, relwidth=0.05, relheight=0.05)
@@ -90,6 +89,11 @@ class Program:
 
         self.update_window()
 
+    def change_angle(self, angle: int) -> None:
+        if self.figure is not None:
+            if self.figure.projecting_angle != angle:
+                self.figure.set_angle(angle)
+                self.update_canvas()
 
     def change_figure_to(self, fig):
         if self.figure is not None:
