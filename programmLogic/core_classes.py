@@ -1,6 +1,9 @@
-from math import cos, sin, radians
-from programmLogic.Basic_math import Plain, Straight, rearrange_dots
 from tkinter import *
+from math import cos, sin, radians
+from random import randint, choice
+from programmLogic.Basic_math import Plain, Straight, rearrange_dots
+
+
 
 
 class Figure:
@@ -25,9 +28,9 @@ class Figure:
         x = d1[0] + delta_x * prop
         y = d1[1] + delta_y * prop
         z = d1[2] + delta_z * prop
-        self.added_dots.append((x, y, z))
+        self.add_dot((x, y, z))
 
-    def add_dot(self, cord: tuple) -> tuple:
+    def add_dot(self, cord: tuple) -> None:
         x, y, z = cord
         self.added_dots.append((x, y, z))
 
@@ -113,4 +116,30 @@ class Figure:
 
     def set_angle(self, angle: int) -> None:
         self.projecting_angle = angle
+
+    def create_3_dots(self) -> None:
+        print(self.sections)
+        s = set()
+        while  len(s) != 3:
+            s.add(choice(self.sections))
+        for section in s:
+            self.add_dot_on_section(section[0], randint(3, 8) * 0.1)
+
+    def shoelace_formula(self):
+        vertices = rearrange_dots(list(map(lambda z: list(map(int, self.transform_point_cords(z))), self.added_dots)))
+        numberOfVertices = len(vertices)
+        sum1 = 0
+        sum2 = 0
+
+        for i in range(0, numberOfVertices - 1):
+            sum1 = sum1 + vertices[i][0] * vertices[i + 1][1]
+            sum2 = sum2 + vertices[i][1] * vertices[i + 1][0]
+
+        # Add xn.y1
+        sum1 = sum1 + vertices[numberOfVertices - 1][0] * vertices[0][1]
+        # Add x1.yn
+        sum2 = sum2 + vertices[0][0] * vertices[numberOfVertices - 1][1]
+
+        area = abs(sum1 - sum2) / 2
+        return area
         
