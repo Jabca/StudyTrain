@@ -6,9 +6,9 @@ from random import choice, randint
 from PIL import Image, ImageDraw, ImageFont
 from math import atan2, degrees, cos, sin, radians
 
-from programmLogic.core_classes import Figure
-from programmLogic.Basic_math import Plain, Straight
-from programmLogic.Figures import Cube, Prism, Pyramid, Tetrahedron
+from lib.core_classes import Figure
+from lib.basic_math import Plain, Straight
+from lib.figures import Cube, Prism, Pyramid, Tetrahedron
 
 
 pyramid = Pyramid(None, size=200, x_move=40)

@@ -1,7 +1,7 @@
 from tkinter import *
 from math import cos, sin, radians
 from random import randint, choice
-from programmLogic.Basic_math import Plain, Straight, rearrange_dots
+from lib.basic_math import Plain, Straight, rearrange_dots
 
 
 

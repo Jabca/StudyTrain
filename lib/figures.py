@@ -1,4 +1,4 @@
-from programmLogic.core_classes import Figure
+from lib.core_classes import Figure
 
 class Pyramid(Figure):
     def __init__(self, canvas, size=100, x_move=20, y_move=200, angle=45):
