@@ -1,20 +1,23 @@
 from tkinter import *
+from random import choice
 
 
 class ApproveWindow:
-    def __init__(self, root, figures, window_width=440, window_height=600, canvas_width=400, canvas_height=350):
+    def __init__(self, root, figures, window_width=440, window_height=600, canvas_width=400, canvas_height=350, offset_width=75):
         self.width = window_width
         self.height = window_height
         self.canvas_width = canvas_width
         self.canvas_height = canvas_height
         self.figure = None
         self.figures = figures
+        self.offset_width = offset_width
 
         self.root_window = root
         self.root_window.geometry(f'{self.width}x{self.height}')
         self.root_window.configure(bg="white")
 
-        self.root_canvas = Canvas(self.root_window, width=self.canvas_width, height=self.canvas_height, bg='white', bd=3)
+        self.root_canvas = Canvas(self.root_window, width=self.canvas_width, height=self.canvas_height, bg='white',
+                                  bd=3)
 
         self.render_window()
         self.update_window()
@@ -26,6 +29,11 @@ class ApproveWindow:
                 self.angle_scale.set(self.figure.projecting_angle)
             except ValueError:
                 self.angle_scale.set(45)
+            self.y_scale.config(from_=self.figure.y_offset - self.offset_width, to=self.figure.y_offset + self.offset_width)
+            self.y_scale.set(self.figure.y_offset)
+
+            self.x_scale.config(from_=self.figure.x_offset - self.offset_width, to=self.figure.x_offset + self.offset_width)
+            self.x_scale.set(self.figure.x_offset)
 
     def update_canvas(self):
         self.root_canvas.delete("all")
@@ -78,10 +86,17 @@ class ApproveWindow:
                 self.figure.set_x_offset(offset)
                 self.update_canvas()
 
-
     def generate_figure(self):
-        pass
-
+        figure = choice(list(self.figures.values()))
+        figure.set_angle(45)
+        figure.create_3_dots()
+        figure.cross_figure_with_plain()
+        while figure.shoelace_formula() < 10000:
+            figure.clear()
+            figure.create_3_dots()
+            figure.cross_figure_with_plain()
+        self.figure = figure
+        self.figure.parent = self
 
     def approve(self):
         pass

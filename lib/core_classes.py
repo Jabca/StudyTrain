@@ -32,6 +32,12 @@ class Figure:
     def add_dot(self, cord: tuple) -> None:
         self.added_dots.append(cord)
 
+    def clear(self):
+        self.added_dots.clear()
+        self.secant_plain = None
+        self.plain_crossing_points.clear()
+        self.additional_dots.clear()
+
     def get_cords_of_section(self, string):
         p1, p2 = sorted(list(string))
         d1 = self.get_point_cords(p1)
@@ -111,10 +117,10 @@ class Figure:
         else:
             self.secant_plain = Plain(*self.added_dots)
             return 1
-        
+
     def set_x_offset(self, offset):
         self.x_offset = offset
-        
+
     def set_y_offset(self, offset):
         self.y_offset = offset
 

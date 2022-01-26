@@ -109,10 +109,7 @@ class InteractiveWindow:
             print('<Error> figure is not declared')
 
     def clear_dots(self):
-        self.figure.added_dots.clear()
-        self.figure.secant_plain = None
-        self.figure.plain_crossing_points.clear()
-        self.figure.additional_dots.clear()
+        self.figure.clear()
         self.update_canvas()
 
     def cross_with_plain(self):

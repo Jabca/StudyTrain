@@ -14,6 +14,7 @@ figures = {'Cube': cube, 'Pyramid': pyramid, 'Prism': prism, 'Tetrahedron': tetr
 def main():
     root = Tk()
     ex = ApproveWindow(root, figures)
+    ex.generate_figure()
     ex.render_window()
     root.mainloop()
 
