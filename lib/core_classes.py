@@ -1,17 +1,16 @@
-from tkinter import *
 from math import cos, sin, radians
 from random import randint, choice
+from tkinter import *
+
 from lib.basic_math import Plain, Straight, rearrange_dots
 
 
-
-
 class Figure:
-    def __init__(self, parent, x_move: int, y_move: int, angle: int, size: int) -> None:
+    def __init__(self, parent, x_offset: int, y_offset: int, angle: int, size: int) -> None:
         self.sections = []
-        self.dots_cords = {}
-        self.x_move = x_move
-        self.y_move = y_move
+        self.verges = {}
+        self.x_offset = x_offset
+        self.y_offset = y_offset
         self.parent = parent
         self.added_dots = []
         self.projecting_angle = angle
@@ -21,7 +20,7 @@ class Figure:
         self.additional_dots = []
 
     def add_dot_on_section(self, section: str, prop: float) -> None:
-        d1, d2 = self.dots_cords[section[0]], self.dots_cords[section[1]]
+        d1, d2 = self.verges[section[0]], self.verges[section[1]]
         delta_x = d2[0] - d1[0]
         delta_y = d2[1] - d1[1]
         delta_z = d2[2] - d1[2]
@@ -31,13 +30,12 @@ class Figure:
         self.add_dot((x, y, z))
 
     def add_dot(self, cord: tuple) -> None:
-        x, y, z = cord
-        self.added_dots.append((x, y, z))
+        self.added_dots.append(cord)
 
     def get_cords_of_section(self, string):
-        string = sorted(list(string))
-        d1 = self.get_point_cords(string[0])
-        d2 = self.get_point_cords(string[1])
+        p1, p2 = sorted(list(string))
+        d1 = self.get_point_cords(p1)
+        d2 = self.get_point_cords(p2)
 
         return d1, d2
 
@@ -46,7 +44,7 @@ class Figure:
             return None
 
         for section in self.sections:
-            d1, d2 = self.dots_cords[section[0][0]], self.dots_cords[section[0][1]]
+            d1, d2 = self.verges[section[0][0]], self.verges[section[0][1]]
             str1 = Straight(d1, d2)
             cross_dot = str1.plain_straight_crossing(self.secant_plain)
             if cross_dot is not None and str1.whether_dot_on_section(cross_dot) and cross_dot not in self.added_dots:
@@ -75,7 +73,7 @@ class Figure:
             x2, y2 = map(int, [(cord[0] + size), (cord[1] + size)])
             canvas.create_oval(x1, y1, x2, y2, fill='green')
 
-        for verge in self.dots_cords.keys():
+        for verge in self.verges.keys():
             x, y = self.get_point_cords(verge)[0] - 14, self.get_point_cords(verge)[1] - 14
             canvas.create_text(x, y,
                                text=verge,
@@ -87,24 +85,24 @@ class Figure:
             x2, y2 = map(int, [(cord[0] + size), (cord[1] + size)])
             canvas.create_oval(x1, y1, x2, y2, fill='blue')
 
-
     def get_point_cords(self, point: str) -> tuple:
-        return self.transform_point_cords(self.dots_cords[point])
+        return self.transform_point_cords(self.verges[point])
 
     def point_cords(self, cords) -> tuple:
         d1 = cords[:]
         projecting_angle = radians(self.projecting_angle)
-        return (d1[0] + 0.5 * d1[1] * cos(projecting_angle) + self.x_move, -1 * d1[2] + 0.5 * d1[1] * sin(projecting_angle) + self.y_move)
+        return d1[0] + 0.5 * d1[1] * cos(projecting_angle) + self.x_offset, \
+               -1 * d1[2] + 0.5 * d1[1] * sin(projecting_angle) + self.y_offset
 
     def transform_point_cords(self, point: tuple) -> tuple:
-       projecting_angle = radians(self.projecting_angle)
-       # print(point)
-       return (point[0] + 0.5 * point[1] * cos(projecting_angle) + self.x_move, -1 * point[2] + 0.5 * point[1] * sin(projecting_angle) + self.y_move)
+        projecting_angle = radians(self.projecting_angle)
+        return point[0] + 0.5 * point[1] * cos(projecting_angle) + self.x_offset, \
+               -1 * point[2] + 0.5 * point[1] * sin(projecting_angle) + self.y_offset
 
     def reformat_cords(self) -> None:
-        for key in self.dots_cords:
-            cords = self.dots_cords[key]
-            self.dots_cords[key] = (cords[0] * self.size, cords[1] * self.size, cords[2] * self.size)
+        for key in self.verges:
+            cords = self.verges[key]
+            self.verges[key] = (cords[0] * self.size, cords[1] * self.size, cords[2] * self.size)
 
     def get_secant_plain(self):
         if len(self.added_dots) != 3:
@@ -113,33 +111,36 @@ class Figure:
         else:
             self.secant_plain = Plain(*self.added_dots)
             return 1
+        
+    def set_x_offset(self, offset):
+        self.x_offset = offset
+        
+    def set_y_offset(self, offset):
+        self.y_offset = offset
 
     def set_angle(self, angle: int) -> None:
         self.projecting_angle = angle
 
-    def create_3_dots(self) -> None:
-        print(self.sections)
-        s = set()
-        while  len(s) != 3:
-            s.add(choice(self.sections))
-        for section in s:
-            self.add_dot_on_section(section[0], randint(3, 8) * 0.1)
+    def create_3_dots(self):
+        allowed_sections = [el[0] for el in self.sections]
+        for i in range(3):
+            section = choice(allowed_sections)
+            proportion = randint(4, 7) / 10
+            self.add_dot_on_section(section, proportion)
+            allowed_sections.remove(section)
 
     def shoelace_formula(self):
         vertices = rearrange_dots(list(map(lambda z: list(map(int, self.transform_point_cords(z))), self.added_dots)))
-        numberOfVertices = len(vertices)
+        number_of_vertices = len(vertices)
         sum1 = 0
         sum2 = 0
 
-        for i in range(0, numberOfVertices - 1):
+        for i in range(0, number_of_vertices - 1):
             sum1 = sum1 + vertices[i][0] * vertices[i + 1][1]
             sum2 = sum2 + vertices[i][1] * vertices[i + 1][0]
 
-        # Add xn.y1
-        sum1 = sum1 + vertices[numberOfVertices - 1][0] * vertices[0][1]
-        # Add x1.yn
-        sum2 = sum2 + vertices[0][0] * vertices[numberOfVertices - 1][1]
+        sum1 = sum1 + vertices[number_of_vertices - 1][0] * vertices[0][1]
+        sum2 = sum2 + vertices[0][0] * vertices[number_of_vertices - 1][1]
 
         area = abs(sum1 - sum2) / 2
         return area
-        

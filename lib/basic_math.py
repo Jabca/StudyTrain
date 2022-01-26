@@ -83,5 +83,5 @@ def rearrange_dots(dots):
     center = [sum([el[0] for el in dots]), sum([el[1] for el in dots])]
     center[0] = center[0] / len(dots)
     center[1] = center[1] / len(dots)
-    ans = sorted(dots, key=lambda  x: atan2(x[0] - center[0], x[1] - center[1]))
+    ans = sorted(dots, key=lambda x: atan2(x[0] - center[0], x[1] - center[1]))
     return ans
