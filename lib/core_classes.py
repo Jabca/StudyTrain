@@ -6,10 +6,11 @@ from lib.basic_math import Plain, Straight, rearrange_dots
 
 
 class Figure:
-    def __init__(self, parent, x_offset: int, y_offset: int, angle: int, size: int) -> None:
+    def __init__(self, parent, x_offset: int, y_offset: int, angle: int, size: int, print_verges_names=False) -> None:
         self.sections = []
         self.verges = {}
         self.x_offset = x_offset
+        self.y_offset = y_offset
         self.y_offset = y_offset
         self.parent = parent
         self.added_dots = []
@@ -18,6 +19,7 @@ class Figure:
         self.secant_plain = None
         self.plain_crossing_points = []
         self.additional_dots = []
+        self.print_verges_names = print_verges_names
 
     def add_dot_on_section(self, section: str, prop: float) -> None:
         d1, d2 = self.verges[section[0]], self.verges[section[1]]
@@ -57,7 +59,7 @@ class Figure:
                 self.additional_dots.append(cross_dot)
                 self.add_dot(cross_dot)
 
-    def render(self) -> None:
+    def render(self, render_verges_names=False) -> None:
         canvas = self.parent.root_canvas
         if self.secant_plain is not None:
             points_2d = [self.transform_point_cords(point) for point in self.added_dots]
@@ -79,17 +81,18 @@ class Figure:
             x2, y2 = map(int, [(cord[0] + size), (cord[1] + size)])
             canvas.create_oval(x1, y1, x2, y2, fill='green')
 
-        for verge in self.verges.keys():
-            x, y = self.get_point_cords(verge)[0] - 14, self.get_point_cords(verge)[1] - 14
-            canvas.create_text(x, y,
-                               text=verge,
-                               justify=CENTER, font=("Verdana", 15), fill='blue')
-
         for additional_point in self.additional_dots:
             cord = self.transform_point_cords(additional_point)
             x1, y1 = map(int, [(cord[0] - size), (cord[1] - size)])
             x2, y2 = map(int, [(cord[0] + size), (cord[1] + size)])
             canvas.create_oval(x1, y1, x2, y2, fill='blue')
+
+        if render_verges_names:
+            for verge in self.verges.keys():
+                x, y = self.get_point_cords(verge)[0] - 14, self.get_point_cords(verge)[1] - 14
+                canvas.create_text(x, y,
+                                   text=verge,
+                                   justify=CENTER, font=("Verdana", 15), fill='blue')
 
     def get_point_cords(self, point: str) -> tuple:
         return self.transform_point_cords(self.verges[point])
@@ -131,7 +134,7 @@ class Figure:
         allowed_sections = [el[0] for el in self.sections]
         for i in range(3):
             section = choice(allowed_sections)
-            proportion = randint(4, 7) / 10
+            proportion = randint(3, 7) / 10
             self.add_dot_on_section(section, proportion)
             allowed_sections.remove(section)
 

@@ -1,9 +1,10 @@
-from tkinter import *
 from random import choice
+from tkinter import *
 
 
 class ApproveWindow:
-    def __init__(self, root, figures, window_width=440, window_height=600, canvas_width=400, canvas_height=350, offset_width=75):
+    def __init__(self, root, figures, window_width=440, window_height=600, canvas_width=400, canvas_height=350,
+                 offset_width=75):
         self.width = window_width
         self.height = window_height
         self.canvas_width = canvas_width
@@ -29,10 +30,12 @@ class ApproveWindow:
                 self.angle_scale.set(self.figure.projecting_angle)
             except ValueError:
                 self.angle_scale.set(45)
-            self.y_scale.config(from_=self.figure.y_offset - self.offset_width, to=self.figure.y_offset + self.offset_width)
+            self.y_scale.config(from_=self.figure.y_offset - self.offset_width,
+                                to=self.figure.y_offset + self.offset_width)
             self.y_scale.set(self.figure.y_offset)
 
-            self.x_scale.config(from_=self.figure.x_offset - self.offset_width, to=self.figure.x_offset + self.offset_width)
+            self.x_scale.config(from_=self.figure.x_offset - self.offset_width,
+                                to=self.figure.x_offset + self.offset_width)
             self.x_scale.set(self.figure.x_offset)
 
     def update_canvas(self):
@@ -65,6 +68,7 @@ class ApproveWindow:
         self.cancel_image = self.cancel_image.subsample(8, 8)
         self.cancel_b = Button(image=self.cancel_image, bd=0, bg="white", highlightbackground="white")
         self.cancel_b.place(relx=0.55, rely=0.87, relheight=0.12, relwidth=0.3)
+        self.cancel_b["command"] = lambda: self.cancel()
 
         self.update_window()
 
@@ -86,8 +90,9 @@ class ApproveWindow:
                 self.figure.set_x_offset(offset)
                 self.update_canvas()
 
-    def generate_figure(self):
+    def generate_next_figure(self):
         figure = choice(list(self.figures.values()))
+        figure.clear()
         figure.set_angle(45)
         figure.create_3_dots()
         figure.cross_figure_with_plain()
@@ -102,4 +107,5 @@ class ApproveWindow:
         pass
 
     def cancel(self):
-        pass
+        self.generate_next_figure()
+        self.update_window()

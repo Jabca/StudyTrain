@@ -35,7 +35,7 @@ class InteractiveWindow:
     def update_canvas(self):
         self.root_canvas.delete("all")
         if self.figure is not None:
-            self.figure.render()
+            self.figure.render(render_verges_names=True)
         self.root_canvas.update()
 
     def render_window(self):
