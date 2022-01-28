@@ -34,12 +34,10 @@ class StartingDialog:
             os.mkdir("res")
         now = datetime.datetime.now()
         try:
-            root_folder_name = f"res/{now.day}-{now.month}-{now.year}|{now.hour}:{now.minute}"
+            root_folder_name = f"res/{now.day}-{now.month}-{now.year}|{now.hour}:{now.minute}:{now.second}"
             os.mkdir(root_folder_name)
         except FileExistsError:
-            now += datetime.timedelta(minutes=1)
-            root_folder_name = f"res/{now.day}-{now.month}-{now.year}|{now.hour}:{now.minute}"
-            os.mkdir(root_folder_name)
+            return
 
         os.mkdir(f"{root_folder_name}/teacher")
         os.mkdir(f"{root_folder_name}/students")
