@@ -1,5 +1,5 @@
 from tkinter import *
-
+from PIL import ImageGrab
 
 class InteractiveWindow:
     def __init__(self, root, figures, window_width=400, window_height=540, canvas_width=400, canvas_height=350):
@@ -118,3 +118,10 @@ class InteractiveWindow:
             return None
         self.figure.cross_figure_with_plain()
         self.update_canvas()
+
+    def getter(self):
+        x = self.root_window.winfo_rootx() + self.root_canvas.winfo_x()
+        y = self.root_window.winfo_rooty() + self.root_canvas.winfo_y()
+        x1 = x + self.root_canvas.winfo_width()
+        y1 = y + self.root_canvas.winfo_height()
+        ImageGrab.grab().crop((x, y, x1, y1)).save("images/save.jpg")

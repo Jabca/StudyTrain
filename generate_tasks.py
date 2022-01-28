@@ -1,16 +1,11 @@
 from tkinter import *
-
-from gui.approval_window import ApproveWindow
 from shared_objects import figures
-
-
+from gui.task_generator_dialog import StartingDialog
 
 
 def main():
     root = Tk()
-    ex = ApproveWindow(root, figures)
-    ex.generate_next_figure()
-    ex.render_window()
+    ex = StartingDialog(root, figures)
     root.mainloop()
 
 

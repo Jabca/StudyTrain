@@ -18,7 +18,6 @@ class Figure:
         self.size = size
         self.secant_plain = None
         self.plain_crossing_points = []
-        self.additional_dots = []
         self.print_verges_names = print_verges_names
 
     def add_dot_on_section(self, section: str, prop: float) -> None:
@@ -38,7 +37,11 @@ class Figure:
         self.added_dots.clear()
         self.secant_plain = None
         self.plain_crossing_points.clear()
-        self.additional_dots.clear()
+        self.plain_crossing_points.clear()
+
+    def clear_for_task(self):
+        self.plain_crossing_points.clear()
+        self.secant_plain = None
 
     def get_cords_of_section(self, string):
         p1, p2 = sorted(list(string))
@@ -56,13 +59,12 @@ class Figure:
             str1 = Straight(d1, d2)
             cross_dot = str1.plain_straight_crossing(self.secant_plain)
             if cross_dot is not None and str1.whether_dot_on_section(cross_dot) and cross_dot not in self.added_dots:
-                self.additional_dots.append(cross_dot)
-                self.add_dot(cross_dot)
+                self.plain_crossing_points.append(cross_dot)
 
     def render(self, render_verges_names=False) -> None:
         canvas = self.parent.root_canvas
         if self.secant_plain is not None:
-            points_2d = [self.transform_point_cords(point) for point in self.added_dots]
+            points_2d = [self.transform_point_cords(point) for point in self.added_dots + self.plain_crossing_points]
             points_2d = rearrange_dots(points_2d)
             canvas.create_polygon(*points_2d, fill='orange', outline='black')
 
@@ -81,7 +83,7 @@ class Figure:
             x2, y2 = map(int, [(cord[0] + size), (cord[1] + size)])
             canvas.create_oval(x1, y1, x2, y2, fill='green')
 
-        for additional_point in self.additional_dots:
+        for additional_point in self.plain_crossing_points:
             cord = self.transform_point_cords(additional_point)
             x1, y1 = map(int, [(cord[0] - size), (cord[1] - size)])
             x2, y2 = map(int, [(cord[0] + size), (cord[1] + size)])

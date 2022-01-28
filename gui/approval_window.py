@@ -1,10 +1,18 @@
 from random import choice
 from tkinter import *
-
+from time import sleep
+from PIL import ImageGrab
 
 class ApproveWindow:
-    def __init__(self, root, figures, window_width=440, window_height=600, canvas_width=400, canvas_height=350,
+    def __init__(self, root, figures: dict, to_save_dir: str, amount_to_generate,
+                 window_width=440,
+                 window_height=600,
+                 canvas_width=400,
+                 canvas_height=350,
                  offset_width=75):
+
+        self.cur_image_num = 0
+        self.amount_to_generate = amount_to_generate
         self.width = window_width
         self.height = window_height
         self.canvas_width = canvas_width
@@ -12,6 +20,7 @@ class ApproveWindow:
         self.figure = None
         self.figures = figures
         self.offset_width = offset_width
+        self.to_save_dir = to_save_dir
 
         self.root_window = root
         self.root_window.geometry(f'{self.width}x{self.height}')
@@ -37,6 +46,7 @@ class ApproveWindow:
             self.x_scale.config(from_=self.figure.x_offset - self.offset_width,
                                 to=self.figure.x_offset + self.offset_width)
             self.x_scale.set(self.figure.x_offset)
+        self.root_window.update()
 
     def update_canvas(self):
         self.root_canvas.delete("all")
@@ -47,26 +57,31 @@ class ApproveWindow:
     def render_window(self):
         self.root_canvas.place(relx=0.14, rely=0.09, relheight=0.7, relwidth=0.84)
 
-        self.angle_scale = Scale(from_=0, to=90, orient=HORIZONTAL, bg="white", bd=0, highlightbackground="white")
+        self.angle_scale = Scale(self.root_window, from_=0, to=90, orient=HORIZONTAL, bg="white", bd=0,
+                                 highlightbackground="white")
         self.angle_scale.place(relx=0.12, rely=0, relheight=0.08, relwidth=0.84)
         self.angle_scale.bind("<Motion>", lambda x: self.change_angle(self.angle_scale.get()))
 
-        self.y_scale = Scale(from_=0, to=100, orient=VERTICAL, bg="white", bd=0, highlightbackground="white")
+        self.y_scale = Scale(self.root_window, from_=0, to=100, orient=VERTICAL, bg="white", bd=0,
+                             highlightbackground="white")
         self.y_scale.place(relx=0.01, rely=0.1, relheight=0.7, relwidth=0.12)
         self.y_scale.bind("<Motion>", lambda x: self.change_y_offset(self.y_scale.get()))
 
-        self.x_scale = Scale(from_=0, to=100, orient=HORIZONTAL, bg="white", bd=0, highlightbackground="white")
+        self.x_scale = Scale(self.root_window, from_=0, to=100, orient=HORIZONTAL, bg="white", bd=0,
+                             highlightbackground="white")
         self.x_scale.place(relx=0.12, rely=0.8, relheight=0.08, relwidth=0.84)
         self.x_scale.bind("<Motion>", lambda x: self.change_x_offset(self.x_scale.get()))
 
         self.approve_image = PhotoImage(file="gui/source/green_check.png")
         self.approve_image = self.approve_image.subsample(8, 8)
-        self.approve_b = Button(image=self.approve_image, bd=0, bg="white", highlightbackground="white")
+        self.approve_b = Button(self.root_window, image=self.approve_image, bd=0, bg="white",
+                                highlightbackground="white")
+        self.approve_b["command"] = lambda: self.approve()
         self.approve_b.place(relx=0.15, rely=0.87, relheight=0.12, relwidth=0.3)
 
         self.cancel_image = PhotoImage(file="gui/source/red_cross.png")
         self.cancel_image = self.cancel_image.subsample(8, 8)
-        self.cancel_b = Button(image=self.cancel_image, bd=0, bg="white", highlightbackground="white")
+        self.cancel_b = Button(self.root_window, image=self.cancel_image, bd=0, bg="white", highlightbackground="white")
         self.cancel_b.place(relx=0.55, rely=0.87, relheight=0.12, relwidth=0.3)
         self.cancel_b["command"] = lambda: self.cancel()
 
@@ -103,8 +118,34 @@ class ApproveWindow:
         self.figure = figure
         self.figure.parent = self
 
+    def get_canvas(self):
+        x = self.root_window.winfo_rootx() + self.root_canvas.winfo_x()
+        y = self.root_window.winfo_rooty() + self.root_canvas.winfo_y()
+        x1 = x + self.root_canvas.winfo_width()
+        y1 = y + self.root_canvas.winfo_height()
+        return ImageGrab.grab().crop((x, y, x1, y1))
+
     def approve(self):
-        pass
+        image = self.get_canvas()
+        image.save(f"{self.to_save_dir}/teacher/{self.cur_image_num}.png")
+
+        self.figure.clear_for_task()
+        self.update_window()
+
+        sleep(0.1)
+        image = self.get_canvas()
+        image.save(f"{self.to_save_dir}/students/{self.cur_image_num}.png")
+
+        self.figure.clear()
+        self.cur_image_num += 1
+        self.amount_to_generate -= 1
+        if self.amount_to_generate <= 0:
+            self.root_window.destroy()
+            return
+
+        self.generate_next_figure()
+        self.update_window()
+
 
     def cancel(self):
         self.generate_next_figure()
