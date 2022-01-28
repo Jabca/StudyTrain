@@ -34,7 +34,7 @@ class StartingDialog:
             os.mkdir("res")
         now = datetime.datetime.now()
         try:
-            root_folder_name = f"res/{now.day}-{now.month}-{now.year}|{now.hour}:{now.minute}:{now.second}"
+            root_folder_name = f"res/{now.day}-{now.month}-{now.year}_{now.hour}-{now.minute}-{now.second}"
             os.mkdir(root_folder_name)
         except FileExistsError:
             return

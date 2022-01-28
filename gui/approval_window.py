@@ -143,8 +143,8 @@ class ApproveWindow:
         self.amount_to_generate -= 1
         if self.amount_to_generate <= 0:
             self.root_window.destroy()
-            save_dir_to_docx(f"{self.to_save_dir}/students", f"{self.to_save_dir}/students_variant.docx")
-            save_dir_to_docx(f"{self.to_save_dir}/teacher", f"{self.to_save_dir}/teacher_variant.docx")
+            save_dir_to_docx(f"{self.to_save_dir}/students", f"{self.to_save_dir}/students.docx")
+            save_dir_to_docx(f"{self.to_save_dir}/teacher", f"{self.to_save_dir}/teacher.docx")
             return
 
         self.generate_next_figure()
