@@ -13,21 +13,42 @@ class StartingDialog:
         self.root_window.geometry(f'{self.width}x{self.height}')
         self.root_window.configure(bg='white')
         self.figures = figures
+        self.root_window.winfo_toplevel().title("Generate")
 
         self.render_window()
-        # self.start_generating()
+
+        self.root_window.bind("<Up>", lambda x: self.increment_spinbox)
+        self.root_window.bind("<Down>", lambda x: self.decrement_spinbox)
+        self.root_window.bind("<Return>", self.enter_handler)
+
+
+    def decrement_spinbox(self, e):
+        prev = int(self.spinbox.get())
+        self.spinbox.delete(0, "end")
+        self.spinbox.insert(0, prev-1)
+
+    def increment_spinbox(self, e):
+        prev = int(self.spinbox.get())
+        self.spinbox.delete(0, "end")
+        self.spinbox.insert(0, prev + 1)
+
+    def enter_handler(self, e):
+        self.start_generating()
 
     def render_window(self):
         self.label = Label(text="Number of tasks:")
         self.label.pack(fill=X)
 
-        self.spinbox = Spinbox(from_=5, to=100)
-        self.spinbox.insert(0, 2)
+        self.spinbox = Spinbox(from_=1, to=100)
+        self.spinbox.delete(0, "end")
+        self.spinbox.insert(0, 25)
         self.spinbox.pack(fill=X)
 
         self.start_b = Button(text="Start generating")
         self.start_b.pack(fill=X)
         self.start_b["command"] = lambda: self.start_generating()
+
+        self.spinbox.focus_set()
 
     def start_generating(self):
         if "res" not in [name for name in os.listdir(".")]:
@@ -42,11 +63,11 @@ class StartingDialog:
         os.mkdir(f"{root_folder_name}/teacher")
         os.mkdir(f"{root_folder_name}/students")
 
-        to_generate = self.spinbox.get()
+        to_generate = int(self.spinbox.get())
         self.root_window.destroy()
 
         child_window = Tk()
-        ex = ApproveWindow(child_window, self.figures, root_folder_name, int(to_generate))
+        ex = ApproveWindow(child_window, self.figures, root_folder_name, to_generate)
         ex.generate_next_figure()
         ex.update_window()
         child_window.mainloop()

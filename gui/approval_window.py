@@ -5,6 +5,7 @@ from tkinter import *
 from PIL import ImageGrab
 from docx_interaction import save_dir_to_docx
 
+
 class ApproveWindow:
     def __init__(self, root, figures: dict, to_save_dir: str, amount_to_generate,
                  window_width=440,
@@ -31,8 +32,13 @@ class ApproveWindow:
         self.root_canvas = Canvas(self.root_window, width=self.canvas_width, height=self.canvas_height, bg='white',
                                   bd=3)
 
+        self.root_window.winfo_toplevel().title("Approve window")
         self.render_window()
         self.update_window()
+
+        self.root_window.bind("<Key>", lambda e: self.arrow_handler(e.keysym))
+        self.root_window.bind("<Return>", lambda e: self.approve())
+        self.root_window.bind("<Escape>", lambda e: self.cancel())
 
     def update_window(self):
         self.update_canvas()
@@ -113,12 +119,13 @@ class ApproveWindow:
         figure.set_angle(45)
         figure.create_3_dots()
         figure.cross_figure_with_plain()
-        while figure.shoelace_formula() < 10000:
+        while figure.shoelace_formula() < 10000 and len(figure.plain_crossing_points) <= 4:
             figure.clear()
             figure.create_3_dots()
             figure.cross_figure_with_plain()
         self.figure = figure
         self.figure.parent = self
+        self.figure.number_of_figure = self.cur_image_num
 
     def get_canvas(self):
         x = self.root_window.winfo_rootx() + self.root_canvas.winfo_x()
@@ -153,3 +160,23 @@ class ApproveWindow:
     def cancel(self):
         self.generate_next_figure()
         self.update_window()
+
+    def arrow_handler(self, key_type):
+        if key_type == "Up":
+            self.change_y_offset(self.y_scale.get() - 1)
+            self.y_scale.set(self.figure.y_offset)
+        elif key_type == 'Down':
+            self.change_y_offset(self.y_scale.get() + 1)
+            self.y_scale.set(self.figure.y_offset)
+        elif key_type == "Left":
+            self.change_x_offset(self.x_scale.get() - 1)
+            self.x_scale.set(self.figure.x_offset)
+        elif key_type == "Right":
+            self.change_x_offset(self.x_scale.get() + 1)
+            self.x_scale.set(self.figure.x_offset)
+        elif key_type == "KP_Add":
+            self.change_angle(self.angle_scale.get() + 1)
+            self.angle_scale.set(self.figure.projecting_angle)
+        elif key_type == "KP_Subtract":
+            self.change_angle(self.angle_scale.get() - 1)
+            self.angle_scale.set(self.figure.projecting_angle)

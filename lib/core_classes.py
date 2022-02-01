@@ -19,6 +19,7 @@ class Figure:
         self.secant_plain = None
         self.plain_crossing_points = []
         self.print_verges_names = print_verges_names
+        self.number_of_figure = None
 
     def add_dot_on_section(self, section: str, prop: float) -> None:
         d1, d2 = self.verges[section[0]], self.verges[section[1]]
@@ -96,6 +97,9 @@ class Figure:
                                    text=verge,
                                    justify=CENTER, font=("Verdana", 15), fill='blue')
 
+        if self.number_of_figure is not None:
+            canvas.create_text(20, 20, text=self.number_of_figure, justify=CENTER, font=("Verdana", 15), fill="blue")
+
     def get_point_cords(self, point: str) -> tuple:
         return self.transform_point_cords(self.verges[point])
 
@@ -136,7 +140,7 @@ class Figure:
         allowed_sections = [el[0] for el in self.sections]
         for i in range(3):
             section = choice(allowed_sections)
-            proportion = randint(3, 7) / 10
+            proportion = choice([i/10 for i in range(3, 8)] + [0, 1])
             self.add_dot_on_section(section, proportion)
             allowed_sections.remove(section)
 
