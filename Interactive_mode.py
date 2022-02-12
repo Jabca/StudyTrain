@@ -1,6 +1,6 @@
 from tkinter import *
 
-from gui.interactive_window import InteractiveWindow
+from gui import InteractiveWindow
 from shared_objects import figures
 
 

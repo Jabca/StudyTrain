@@ -1,6 +1,6 @@
 from tkinter import *
 from shared_objects import figures
-from gui.task_generator_dialog import StartingDialog
+from gui import StartingDialog
 
 
 def main():

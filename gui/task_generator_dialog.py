@@ -2,7 +2,7 @@ import datetime
 import os
 from tkinter import *
 
-from gui.approval_window import ApproveWindow
+from gui import ApproveWindow
 
 
 class StartingDialog:

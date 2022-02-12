@@ -1,4 +1,4 @@
-from lib.figures import Cube, Prism, Pyramid, Tetrahedron
+from lib import Cube, Prism, Pyramid, Tetrahedron
 
 pyramid = Pyramid(None, size=200, x_offset=40)
 cube = Cube(None, size=200, x_offset=40, y_offset=240)
