@@ -28,12 +28,12 @@ python generate_tasks.py
 Перед вами появится это окно, оно позволяет выбрать количество заданий, которые вы хотите создать.
 (можете использовать стрелочки вверх/вниз на клавиатуре чтобы менять значение)
 
-![image](https://user-images.githubusercontent.com/49454499/153771346-d9bc7e8f-45c6-4f65-a688-1542a7194cb5.png)
+![number chooser](https://raw.githubusercontent.com/Jabca/StudyTrain/master/gui/source/number_chooser.png?raw=true)
 
 
 После выбора количества заданий у вас появится окно
 
-![alt text](https://raw.githubusercontent.com/Jabca/StudyTrain/master/gui/source/approve_window.png)
+![approve window](https://raw.githubusercontent.com/Jabca/StudyTrain/master/gui/source/approve_window.png?raw=true)
 
 Здесь вы проверяете корректность заданий, но и можете менять то, как оно отображается.
 
@@ -45,15 +45,15 @@ python generate_tasks.py
 
 После завершения работы в папке с программой появится папка "res"(если её там до этого не было)
 
-![alt text](https://raw.githubusercontent.com/Jabca/StudyTrain/master/gui/source/files.png)
+![files](https://raw.githubusercontent.com/Jabca/StudyTrain/master/gui/source/files.png?raw=true)
 
 В ней создастся папка с наванием в формате dd-mm-yy_hh-mm-ss время берется в момент начала работы программы.
 
-![alt text](https://raw.githubusercontent.com/Jabca/StudyTrain/master/gui/source/res_folder.png)
+![res folder contents](https://raw.githubusercontent.com/Jabca/StudyTrain/master/gui/source/res_folder.png?raw=true)
 
 В ней содержатся версии для печати для учеников и учителя в формате docx, такого вида.
 
-![alt text](https://raw.githubusercontent.com/Jabca/StudyTrain/master/gui/source/docx_res.png?raw=true)
+![docx result](https://raw.githubusercontent.com/Jabca/StudyTrain/master/gui/source/docx_res.png?raw=true)
 
 А также папки с иходными картинками из которых составляены версии для печати.
 
