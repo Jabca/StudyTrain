@@ -53,7 +53,7 @@ python generate_tasks.py
 
 В ней содержатся версии для печати для учеников и учителя в формате docx, такого вида.
 
-![alt text](https://raw.githubusercontent.com/Jabca/StudyTrain/master/gui/source/docx_res.png)
+![alt text](https://raw.githubusercontent.com/Jabca/StudyTrain/master/gui/source/docx_res.png?raw=true)
 
 А также папки с иходными картинками из которых составляены версии для печати.
 
