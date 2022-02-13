@@ -28,7 +28,7 @@ python generate_tasks.py
 Перед вами появится это окно, оно позволяет выбрать количество заданий, которые вы хотите создать.
 (можете использовать стрелочки вверх/вниз на клавиатуре чтобы менять значение)
 
-![alt text](https://raw.githubusercontent.com/Jabca/StudyTrain/master/gui/source/number_chooser.png)
+![image](https://user-images.githubusercontent.com/49454499/153771346-d9bc7e8f-45c6-4f65-a688-1542a7194cb5.png)
 
 
 После выбора количества заданий у вас появится окно
